@@ -40,3 +40,11 @@ ABD_web, ABD_web_inverse = calculateABD(stacksequence=StringerWeb, plyT=tStringe
 print(ABD_flange)
 print(ABD_web)
 
+# Calculate the homogonized average axial EModulus 
+E_avg_x_web = 1/(ABD_web_inverse[0][0]*4)
+A_web = 40*4
+E_avg_x_flange = ABD_flange[0][0]/4
+A_flange = 70*4
+E_avg_x = (E_avg_x_web*A_web + E_avg_x_flange*A_flange)/(A_web+A_flange)
+print(E_avg_x)
+
