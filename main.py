@@ -46,5 +46,14 @@ A_web = 40*4
 E_avg_x_flange = ABD_flange[0][0]/4
 A_flange = 70*4
 E_avg_x = (E_avg_x_web*A_web + E_avg_x_flange*A_flange)/(A_web+A_flange)
-print(E_avg_x)
+print('Your homogonized average Ex is: '+E_avg_x)
+
+# Calculate the homogonized average shear modulus 
+G_avg_x_web = 1/(ABD_web_inverse[3][3]*4)
+A_web = 40*4
+G_avg_x_flange = ABD_flange[3][3]/4
+A_flange = 70*4
+G_avg_x = (G_avg_x_web*A_web + G_avg_x_flange*A_flange)/(A_web+A_flange)
+print('Your homogonized average Gxy is: '+G_avg_x)
+
 
