@@ -34,3 +34,7 @@ StringerWeb=[-45,-45,45,45,0,0,90,90,90,90,0,0,45,45,-45,-45]
 tPanel = 0.552
 tStringer = 0.25
 
+ABD, ABD_inverse = calculateABD(stacksequence=panelStack, plyT=tPanel, EModulus1=E_11_avg, EModulus2=E_22_avg, ShearModulus=G_12_avg)
+print(ABD)
+print(ABD_inverse)
+

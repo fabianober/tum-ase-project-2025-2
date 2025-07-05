@@ -20,6 +20,12 @@ def constitutiveLawPlyProblemCOS(EModulus1, EModulus2, ShearModulus, theta, mu12
     return [q11_bar, q12_bar, q22_bar, q16_bar, q26_bar, q66_bar]
 
 def aMatrix (k, q11_bar, q12_bar, q22_bar, q16_bar, q26_bar, q66_bar, z_cords):
+    a11 = 0 
+    a12 = 0
+    a22 = 0
+    a16 = 0
+    a26 = 0
+    a66 = 0
     for j in range(0,k):
         a11 += q11_bar[j]*(z_cords[j+1] - z_cords[j])
         a12 += q12_bar[j]*(z_cords[j+1] - z_cords[j])
@@ -30,6 +36,12 @@ def aMatrix (k, q11_bar, q12_bar, q22_bar, q16_bar, q26_bar, q66_bar, z_cords):
     return [a11, a12, a22, a16, a26, a66]
 
 def bMatrix (k, q11_bar, q12_bar, q22_bar, q16_bar, q26_bar, q66_bar, z_cords):
+    b11 = 0 
+    b12 = 0
+    b22 = 0
+    b16 = 0
+    b26 = 0
+    b66 = 0
     for j in range(0,k):
         b11 += 0.5*q11_bar[j]*(z_cords[j+1]**2 - z_cords[j]**2)
         b12 += 0.5*q12_bar[j]*(z_cords[j+1]**2 - z_cords[j]**2)
@@ -40,6 +52,12 @@ def bMatrix (k, q11_bar, q12_bar, q22_bar, q16_bar, q26_bar, q66_bar, z_cords):
     return [b11, b12, b22, b16, b26, b66]
 
 def dMatrix (k, q11_bar, q12_bar, q22_bar, q16_bar, q26_bar, q66_bar, z_cords):
+    d11 = 0 
+    d12 = 0
+    d22 = 0
+    d16 = 0
+    d26 = 0
+    d66 = 0
     for j in range(0,k):
         d11 += (1/3)*q11_bar[j]*(z_cords[j+1]**3 - z_cords[j]**3)
         d12 += (1/3)*q12_bar[j]*(z_cords[j+1]**3 - z_cords[j]**3)
@@ -49,7 +67,7 @@ def dMatrix (k, q11_bar, q12_bar, q22_bar, q16_bar, q26_bar, q66_bar, z_cords):
         d66 += (1/3)*q66_bar[j]*(z_cords[j+1]**3 - z_cords[j]**3)
     return [d11, d12, d22, d16, d26, d66]
 
-def calculateABD(stacksequence, plyT, EModulus1, EModulus2, ShearModulus, ):
+def calculateABD(stacksequence, plyT, EModulus1, EModulus2, ShearModulus):
     numberOfPlies = len(stacksequence)
     #Calculate the z coordinates of the laminate  
     zcords=[]
@@ -89,7 +107,7 @@ def calculateABD(stacksequence, plyT, EModulus1, EModulus2, ShearModulus, ):
     
     #Compute the inverse 
     ABD_inverse = np.linalg.inv(ABD)
-    return ABD, ABD_inverse
+    return np.round(ABD, decimals=10), np.round(ABD_inverse, decimals=10)
 
 
 if __name__=='__main__':
