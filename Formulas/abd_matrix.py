@@ -1,5 +1,5 @@
 import math
-
+import numpy as np 
 def constitutiveLawPlyProblemCOS(EModulus1, EModulus2, ShearModulus, theta, mu12=0.33):
     #Evaluating sinus and cosinus of theta
     sinus_theta = math.sin(math.radians(theta))
@@ -78,14 +78,19 @@ def calculateABD(stacksequence, plyT, EModulus1, EModulus2, ShearModulus, ):
     AMatrix = aMatrix(k=numberOfPlies, q11_bar= q_11_bar, q12_bar=q_12_bar, q22_bar=q_22_bar, q16_bar=q_16_bar, q26_bar=q_26_bar, q66_bar=q_66_bar, z_cords=zcords)
     BMatrix = bMatrix(k=numberOfPlies, q11_bar= q_11_bar, q12_bar=q_12_bar, q22_bar=q_22_bar, q16_bar=q_16_bar, q26_bar=q_26_bar, q66_bar=q_66_bar, z_cords=zcords)
     DMatrix = dMatrix(k=numberOfPlies, q11_bar= q_11_bar, q12_bar=q_12_bar, q22_bar=q_22_bar, q16_bar=q_16_bar, q26_bar=q_26_bar, q66_bar=q_66_bar, z_cords=zcords)
-    print(AMatrix)
-    print(BMatrix)
-    print(DMatrix)
+    
     #Assemble to ABD matrix 
-    ABD = 1 
+    ABD = np.array([[AMatrix[0], AMatrix[1], AMatrix[3], BMatrix[0], BMatrix[1], BMatrix[3]],
+                    [AMatrix[1], AMatrix[2], AMatrix[4], BMatrix[1], BMatrix[2], BMatrix[4]],
+                    [AMatrix[3], AMatrix[4], AMatrix[5], BMatrix[3], BMatrix[4], BMatrix[5]],
+                    [BMatrix[0], BMatrix[1], BMatrix[3], DMatrix[0], DMatrix[1], DMatrix[3]],
+                    [BMatrix[1], BMatrix[2], BMatrix[4], DMatrix[1], DMatrix[2], DMatrix[4]],
+                    [BMatrix[3], BMatrix[4], BMatrix[5], DMatrix[3], DMatrix[4], DMatrix[5]]])
+    
     #Compute the inverse 
-    ABD_inverse = -1
+    ABD_inverse = np.linalg.inv(ABD)
     return ABD, ABD_inverse
+
 
 if __name__=='__main__':
     ABD, ABD_inverse = calculateABD([0,90,90,0], 0.2)
