@@ -200,6 +200,7 @@ data/*
 hwsolver.mesg
 hwreport/
 name.txt
+data.json
 
 # Cursor
 #  Cursor is an AI-powered code editor. `.cursorignore` specifies files/directories to
