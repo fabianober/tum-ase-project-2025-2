@@ -3,45 +3,60 @@ import helpers as hp
 
 
 def panel_element_volume(row, elementLength, elementWidth):
-    halfVolume = (row['thickness']*elementLength*elementWidth)/2
-    return halfVolume 
+    panelVolume = (row['thickness']*elementLength*elementWidth)
+    return panelVolume 
 
 def stringer_element_volume(row, elementLength):
-    area_top = row['dim3'] * row['dim2']
-    area_side_web = row['dim2'] * (row['dim1'] - row['dim2'])
-    area_bottom = row['dim4'] * row['dim2']
-    areaTot = area_top + 2 * area_side_web + 2 * area_bottom
+    area_flange = row['dim3'] * row['dim1']
+    area_web = row['dim4'] * (row['dim2'] - row['dim3'])
+    areaTot = area_flange + area_web 
     volume = areaTot * elementLength
     return volume
 
-def crosssectional_properties_tee_skin(height_str, width_str, thickness_web, thickness_flange, thickness_skin, stringer_pitch):
+def crosssectional_properties_tee_skin(height_str, width_str, thickness_web, thickness_flange, thickness_skin_left,
+                                       thickness_skin_right, stringer_pitch, E_x_skin, E_x_flange, E_x_web,
+                                       E_y_skin, E_y_flange, E_y_web):
 
     # Individual moment of inertia calculations for the skin, flange, and web of a T-stringer
-    I_y_skin = (stringer_pitch * thickness_skin**3) / 12
+    I_y_skin_left = (stringer_pitch/2 * thickness_skin_left**3) / 12
+    I_y_skin_right = (stringer_pitch/2 * thickness_skin_right**3) / 12
     I_y_flange = (width_str * thickness_flange**3) / 12
     I_y_web = (thickness_web*(height_str-thickness_web)**3)/12
 
     # Calculate the centroid of the T-stringer
-    z_skin = -thickness_skin / 2
+    z_skin_left = -thickness_skin_left / 2
+    z_skin_right = -thickness_skin_left / 2 
     z_flange = thickness_flange/2
     z_web = thickness_flange + (height_str - thickness_flange) / 2
 
     # Calculate the area of each component
-    A_skin = stringer_pitch * thickness_skin
+    A_skin_left = stringer_pitch/2 * thickness_skin_left
+    A_skin_right = stringer_pitch/2 * thickness_skin_right
     A_flange = width_str * thickness_flange
     A_web = thickness_web * (height_str - thickness_flange)
-    A_tot = A_skin + A_flange + A_web
+    A_tot = A_skin_left + A_skin_right + A_flange + A_web
 
-    z_bar = (A_skin * z_skin + A_flange * z_flange + A_web * z_web) / A_tot
+    # Elastic center calc 
+    z_bar = (E_x_skin* A_skin_left * z_skin_left+ E_x_skin *A_skin_right*z_skin_right + 
+            E_x_flange * A_flange * z_flange + E_x_web * A_web * z_web)/ (E_x_skin *A_skin_left + E_x_skin*A_skin_right+
+                                                                          E_x_flange*A_flange +E_x_web*A_web )
 
 
     # combined moment of inertia
-    contrib_skin = I_y_skin + (z_skin-z_bar)**2 * A_skin
+    contrib_skin_left = I_y_skin_left + (z_skin_left-z_bar)**2 * A_skin_left
+    contrib_skin_right = I_y_skin_right + (z_skin_right-z_bar)**2 * A_skin_right
     contrib_flange = I_y_flange + (z_flange-z_bar)**2 * A_flange
     contrib_web = I_y_web + (z_web-z_bar)**2 * A_web
-    I_y_bar = contrib_skin + contrib_flange + contrib_web
-
-    return A_tot, I_y_bar
+    I_y_bar = contrib_skin_left + contrib_skin_right + contrib_flange + contrib_web
+    
+    #Calculate the needed E_y_tot for the stability analysis 
+    EI_comb = ((E_y_skin*I_y_skin_left+E_x_skin*A_skin_left*(z_skin_left-z_bar)**2) +
+              (E_y_skin*I_y_skin_right+E_x_skin*A_skin_right*(z_skin_right-z_bar)**2)+
+               (E_y_flange*I_y_flange+E_x_flange*A_flange*(z_flange-z_bar)**2)+
+               (E_y_web*I_y_web+E_x_web*A_web*(z_web-z_bar)**2))
+    E_y_tot = EI_comb/I_y_bar
+    
+    return I_y_bar, A_tot, EI_comb, E_y_tot, z_bar
 
 def crosssectional_properties_hat_skin(DIM1, DIM2, DIM3, DIM4, thickness_skin_left,thickness_skin_right, stringer_pitch, stringer_depth):
     """
@@ -107,68 +122,23 @@ def EulerBuckling(row, EModulus, c=1):
 
 
 #Euler Johnson with Crippling
-def sigma_crip(EModulus, DIM1, DIM2, DIM3, sigma_yield, r):
-    #We have a HAT-Stringer attached to the skin
-    #Support factor for relevant parts of stringer
-    ki1 = 3.6
-    ki2 = 0
-    if DIM1 - DIM2 > 0.2*DIM3:
-       ki2 = 3.6
-    else:
-       ki2 = 0.41
-    #Effective width of crippling-affected parts of the HAT-stringer 
-    b1 = DIM1 - DIM2*(1 - 0.2*(r**2/DIM2**2))
-    b2 = DIM3 - DIM2*(1 - 0.2*(r**2/DIM2**2))
-    #slenderness of the crippling-affected parts of the HAT-stringer
-    x1 = b1/DIM2 * math.sqrt(sigma_yield/(ki1*EModulus))
-    x2 = b2/DIM2 * math.sqrt(sigma_yield/(ki2*EModulus))
-    #Compute the scaling factors alpha 1 & alpha 2
-    alpha1 = 0
-    if 0.4 <= x1 <= 1.095:
-        alpha1 = 1.4-0.628*x1
-    elif 1.095 < x1 <=1.633:
-        alpha1 = 0.78/x1
-    elif 1.633 < x1:
-        alpha1 = 0.69/ pow(x1,0.75)
-    alpha2 = 0
-    if 0.4 <= x2 <= 1.095:
-        alpha2 = 1.4-0.628*x2
-    elif 1.095 < x2 <=1.633:
-        alpha2 = 0.78/x2
-    elif 1.633 < x2:
-        alpha2 = 0.69/ pow(x2,0.75)
-
-    sigma_crippling1 = alpha1 * sigma_yield   #Compute crippling stress 1
-    sigma_crippling2 = alpha2 * sigma_yield   #Compute crippling stress 2
-    #Check weather one of the components cannot cripple at all ie xi<0.4
-    # Both components can cripple 
-    if alpha1 != 0 and alpha2!= 0:
-        sigma_crippling = (2*sigma_crippling1*b1 + sigma_crippling2*b2)/(2*b1 + b2)
-    # Only component 1 can cripple 
-    elif alpha2 == 0 and alpha1 != 0:
-        sigma_crippling = sigma_crippling1
-    # Only component 2 can cripple 
-    elif alpha1 == 0 and alpha2 != 0:
-        sigma_crippling = sigma_crippling2
-    # If both cannot cripple 
-    else:
-        sigma_crippling = sigma_yield
-    sigma_crippling = min(sigma_crippling,sigma_yield)
+def sigma_crip(sigma_u_c, DIM2, DIM3,DIM4, r):
+    b = DIM2-DIM3
+    sigma_crippling = sigma_u_c * 1.63/(b/DIM4)**0.717
     return sigma_crippling
 
-def EulerJohnson(row, EModulus, sigma_yield, c=1, r = 0):
+def EulerJohnson(row, EModulus, c=1, r = 0):
     lmd = row['lambda']
     sigma_cripple = row['sigma_crip']    #returns the crippling stress of the hat-stringer
-    sigma_cutoff = min(sigma_cripple, sigma_yield)  #Determine the inzterpolation stress
-    sigma_crit = sigma_cutoff - 1/EModulus*(sigma_cutoff/(2*math.pi))**2 * lmd**2 # interpolate crictical stress
+    sigma_crit = sigma_cripple - 1/EModulus*(sigma_cripple/(2*math.pi))**2 * lmd**2 # interpolate crictical stress
     reserveFactor = sigma_crit/(1.5*row['sigma_XX_avg'])
     return sigma_crit, abs(reserveFactor)
 
-def chooseBuckling(row, EModulus, sigma_yield):
+def chooseBuckling(row):
     if row['lambda'] > row['lambda_crit']:
-        sigma_crit, reserveFactor = EulerBuckling(row, EModulus=EModulus)
+        sigma_crit, reserveFactor = EulerBuckling(row, EModulus=row['E_y_comb'])
     elif row['lambda'] <= row['lambda_crit']:
-        sigma_crit, reserveFactor = EulerJohnson(row, EModulus=EModulus, sigma_yield=sigma_yield)
+        sigma_crit, reserveFactor = EulerJohnson(row, EModulus=row['E_y_comb'])
     return sigma_crit, reserveFactor
 
 

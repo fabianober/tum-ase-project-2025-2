@@ -6,21 +6,28 @@ def lmd(I_y, area, length, c=1):
     lmd = (c*length)/r
     return lmd
 
-def lambda_crit(EModulus, sigma_crip, sigma_yield):
-    sigma_cutoff = min(sigma_crip, sigma_yield)
+def lambda_crit(EModulus, sigma_crip):
+    sigma_cutoff = sigma_crip
     return math.sqrt(2*(math.pi**2) * EModulus / sigma_cutoff)
 
 def r_gyr(I_y, area):
     return math.sqrt(I_y / area)
 
-def crosssectional_properties_tee_skin_row(row):
+def crosssectional_properties_tee_skin_row(row, stringer_pitch, E_y_skin, E_y_flange, E_y_web, E_x_skin, E_x_flange, E_x_web):
     return colbuckl.crosssectional_properties_tee_skin(
-        height_str=row['height_str'],
-        width_str=row['width_str'],
-        thickness_web=row['thickness_web'],
-        thickness_flange=row['thickness_flange'],
-        thickness_skin=row['thickness_skin'],
-        stringer_pitch=row['stringer_pitch']
+        height_str=row['dim2'],
+        width_str=row['dim1'],
+        thickness_web=row['dim4'],
+        thickness_flange=row['dim3'],
+        thickness_skin_left=row['tLeft'],
+        thickness_skin_right=row['tRight'],
+        stringer_pitch=stringer_pitch,
+        E_x_skin = E_x_skin,
+        E_x_flange = E_x_flange,
+        E_x_web = E_x_web,
+        E_y_skin = E_y_skin,
+        E_y_flange =  E_y_flange,
+        E_y_web = E_y_web 
     )
 
 def crosssectional_properties_hat_skin_row(row, stringer_pitch, stringer_depth):
@@ -32,17 +39,18 @@ def crosssectional_properties_hat_skin_row(row, stringer_pitch, stringer_depth):
         thickness_skin_left=row['tLeft'],
         thickness_skin_right=row['tRight'],
         stringer_pitch=stringer_pitch,
-        stringer_depth=stringer_depth
+        stringer_depth=stringer_depth,
+       
     )
 
 
 
 def personal_data_provider(name):
     if name == 'yannis':
-        sigma_yield = 490
-        EModulus = 65241.07
-        nu = 0.34
-        max_mass = 28.625
+        EModulus11 = 132583.92 * 0.9
+        EModulus22 = 10198.76 * 0.9
+        G12 = 5099.38 * 0.9
+        nu12 = 0.33
     elif name == 'fabian':
         sigma_yield = 490
         EModulus = 65420.46
@@ -58,28 +66,46 @@ def personal_data_provider(name):
         EModulus = 65143.57
         nu = 0.34
         max_mass = 28.667 # PLEASE CHANGE!
-    return sigma_yield, EModulus, nu, max_mass
+    return EModulus11, EModulus22, G12, nu12
 
-def add_component_names_to_elements(df, component_mapping_df, element_id_column='Element ID', component_name_column='Component Name'):
-    """
-    Add component names to a dataframe by matching element IDs with a mapping dataframe.
+def elementComponentMatch(row):
+    # Here we write some ugly code to match the elements with their components
+    # Panel component matching 
+    panel1IDs = [1,2,3,4,5,6]
+    panel2IDs = [7,8,9,10,11,12]
+    panel3IDs = [13,14,15,16,17,18]
+    panel4IDs = [19,20,21,22,23,24]
+    panel5IDs = [25,26,27,28,29,30]
+
+    #Stringer component matching 
+    stringer1IDs = [40,41,42]
+    stringer2IDs = [46,47,48]
+    stringer3IDs = [52,53,54]
+    stringer4IDs = [58,59,60]
     
-    Args:
-        df: Target dataframe to add component names to
-        component_mapping_df: Mapping dataframe containing element ID to component name matches
-        element_id_column: Column name for element ID in both dataframes
-        component_name_column: Column name for component name in the mapping dataframe
-    
-    Returns:
-        DataFrame with added component names
-    """
-    # Create a dictionary for faster lookups
-    component_dict = component_mapping_df.set_index(element_id_column)[component_name_column].to_dict()
-    
-    # Add component names using map function
-    df[component_name_column] = df[element_id_column].map(component_dict)
-    
-    return df
+    CompName = None
+    #Matching panels
+    if row['Element ID'] in panel1IDs:
+        CompName = 'panel1'
+    elif row['Element ID'] in panel2IDs:
+        CompName = 'panel2'
+    elif row['Element ID'] in panel3IDs:
+        CompName = 'panel3'
+    elif row['Element ID'] in panel4IDs:
+        CompName = 'panel4'
+    elif row['Element ID'] in panel5IDs:
+        CompName = 'panel5'
+
+    #Matching stringers 
+    elif row['Element ID'] in stringer1IDs:
+        CompName = 'stringer1'
+    elif row['Element ID'] in stringer2IDs:
+        CompName = 'stringer2'
+    elif row['Element ID'] in stringer3IDs:
+        CompName = 'stringer3'
+    elif row['Element ID'] in stringer4IDs:
+        CompName = 'stringer4'
+    return CompName
 
 #Running test on all functions 
 if __name__ == '__main__':
