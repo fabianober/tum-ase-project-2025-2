@@ -37,8 +37,17 @@ tStringer = 0.25
 ABD_panel, ABD_panel_inverse = calculateABD(stacksequence=panelStack, plyT=tPanel, EModulus1=E_11_avg, EModulus2=E_22_avg, ShearModulus=G_12_avg)
 ABD_flange, ABD_flange_inverse = calculateABD(stacksequence=StringerFlange, plyT=tStringer, EModulus1=E_11_avg, EModulus2=E_22_avg, ShearModulus=G_12_avg)
 ABD_web, ABD_web_inverse = calculateABD(stacksequence=StringerWeb, plyT=tStringer, EModulus1=E_11_avg, EModulus2=E_22_avg, ShearModulus=G_12_avg)
+
+print("ABD matrix for panel:")
+for row in ABD_panel:
+    print("  ".join(f"{val:10.3f}" for val in row))
+print("ABD matrix for flange:")
 print(ABD_flange)
+print("ABD matrix for web:")
 print(ABD_web)
+print("Inverse ABD matrix for panel:")
+print(ABD_panel_inverse)
+
 
 # Calculate the homogonized average axial EModulus 
 E_avg_x_web = 1/(ABD_web_inverse[0][0]*4)
