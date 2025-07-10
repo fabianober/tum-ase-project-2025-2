@@ -1,8 +1,6 @@
 import sys
 import os
-#import random #(Unused import)
-#import string #(Unused import)
-import json
+import importlib.util
 
 sys.path.insert(0, os.path.abspath('..'))
 sys.path.insert(0, os.path.abspath('hmscript'))
@@ -10,18 +8,17 @@ sys.path.insert(0, os.path.abspath('formulas'))
 sys.path.insert(0, os.path.abspath('calculators'))
 
 from abd_matrix import *
+from helpers import *
 
+with open("./name.txt", "r") as f:
+    name = f.read().strip()
+
+personal_data = personal_data_provider(name)
+E_11_avg = personal_data[0]
+E_22_avg = personal_data[1]
+G_12_avg = personal_data[2]
 
 print("Starting analysis...")
-
-with open('data.json', 'r') as f:
-    personal_data = json.load(f)
-
-name = personal_data.get("name")
-E_11_avg = personal_data.get("E_11_avg")
-E_22_avg = personal_data.get("E_22_avg")
-G_12_avg = personal_data.get("G_12_avg")
-
 print(f"Your data is: Name: {name}, E_11_avg: {E_11_avg}, E_22_avg: {E_22_avg}, G_12_avg: {G_12_avg}")
 
 #'Start by defining some of the necessary dimensions'
@@ -38,15 +35,14 @@ ABD_panel, ABD_panel_inverse = calculateABD(stacksequence=panelStack, plyT=tPane
 ABD_flange, ABD_flange_inverse = calculateABD(stacksequence=StringerFlange, plyT=tStringer, EModulus1=E_11_avg, EModulus2=E_22_avg, ShearModulus=G_12_avg)
 ABD_web, ABD_web_inverse = calculateABD(stacksequence=StringerWeb, plyT=tStringer, EModulus1=E_11_avg, EModulus2=E_22_avg, ShearModulus=G_12_avg)
 
-print("ABD matrix for panel:")
-for row in ABD_panel:
-    print("  ".join(f"{val:10.3f}" for val in row))
-print("ABD matrix for flange:")
-print(ABD_flange)
-print("ABD matrix for web:")
-print(ABD_web)
-print("Inverse ABD matrix for panel:")
 print(ABD_panel_inverse)
+
+print("ABD matrix for flange:")
+print_ABD_matrix(np, ABD_flange)
+print("ABD matrix for panel:")
+print_ABD_matrix(np, ABD_panel)
+print("Inverse ABD matrix for panel:")
+print_ABD_matrix(np, ABD_panel_inverse)
 
 
 # Calculate the homogonized average axial EModulus 
@@ -58,4 +54,9 @@ E_avg_x = (E_avg_x_web*A_web + E_avg_x_flange*A_flange)/(A_web+A_flange)
 print('Your homogonized average Ex is: '+str(E_avg_x))
 
 
+print("\n We will now run task 1f")
 
+task_1f_path = os.path.join('calculators', 'task_1f.py')
+spec = importlib.util.spec_from_file_location("task_1f", task_1f_path)
+task_1f = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(task_1f)
