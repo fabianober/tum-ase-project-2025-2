@@ -62,10 +62,10 @@ def personal_data_provider(name):
         nu = 0.34
         max_mass = 28.821
     elif name == 'felix':
-        sigma_yield = 490
-        EModulus = 65143.57
-        nu = 0.34
-        max_mass = 28.667 # PLEASE CHANGE!
+        EModulus11 = 132205.71
+        EModulus22 = 10169.67
+        G12 = 5084.84
+        nu12 = 0.33 #(Not sure, if .33 is correct yet.)
     return EModulus11, EModulus22, G12, nu12
 
 def elementComponentMatch(row):
