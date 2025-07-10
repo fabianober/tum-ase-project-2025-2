@@ -67,3 +67,10 @@ task_1e_path = os.path.join('calculators', 'task_1e.py')  # Build the path to th
 spec = importlib.util.spec_from_file_location("task_1e", task_1e_path)  # Create a module spec
 task_1e = importlib.util.module_from_spec(spec)  # Create a module object from the spec
 spec.loader.exec_module(task_1e)  # Load and execute the module
+
+print("\n We will now run the strength analysis")
+# Dynamically import the 'task_1e' module from the 'calculators' directory
+strength_analysis_path = os.path.join('calculators', 'strength_analysis.py')  # Build the path to the module
+spec = importlib.util.spec_from_file_location("strength_analysis", strength_analysis_path)  # Create a module spec
+strength_analysis = importlib.util.module_from_spec(spec)  # Create a module object from the spec
+spec.loader.exec_module(strength_analysis)  # Load and execute the module
