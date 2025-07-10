@@ -50,12 +50,12 @@ def calculateMatStress(row, EModulus1, EModulus2, ShearModulus):
     q_66_bar = q_bar[5]
     
     # Calculate the stress in problem Cosy for all 
-    Q_bar = np.array([[q_11_bar[i], q_12_bar[i], q_16_bar[i]],
-                        [q_12_bar[i], q_22_bar[i], q_26_bar[i]],
-                        [q_16_bar[i]], q_26_bar[i], q_66_bar[i]])
+    Q_bar = np.array([[q_11_bar, q_12_bar, q_16_bar],
+                     [q_12_bar, q_22_bar, q_26_bar],
+                     [q_16_bar, q_26_bar, q_66_bar]])
     Q_bar = Q_bar * 0.9
     problemStress = Q_bar @ strains
-    #T_sigma = #Call function 
+    T_sigma = tSigmaMatrix(theta=row['plyTheta'])
     materialStress = T_sigma @ problemStress
         
     return materialStress[0], materialStress[1], materialStress[2]
