@@ -197,6 +197,7 @@ cython_debug/
 # Custom
 .DS_Store
 data/*
+name.txt
 hwsolver.mesg
 hwreport/
 name.txt

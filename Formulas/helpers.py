@@ -43,6 +43,29 @@ def crosssectional_properties_hat_skin_row(row, stringer_pitch, stringer_depth):
        
     )
 
+def print_ABD_matrix(np, matrix):
+    # Round to 3 decimal places
+    matrix = np.round(matrix, 3)
+
+    split_idx = 3  # For quadrant split
+
+    # Function to format number with space as thousands separator
+    def format_number(val):
+        parts = f"{val:,.2f}".split(".")  # Use comma for grouping first
+        parts[0] = parts[0].replace(",", " ")  # Replace comma with space
+        return f"{parts[0]}.{parts[1]}"
+
+    # Function to format a single row with visual separators
+    def format_row(row):
+        left = "  ".join(f"{format_number(val):>13}" for val in row[:split_idx])
+        right = "  ".join(f"{format_number(val):>13}" for val in row[split_idx:])
+        return f"{left}  |  {right}"
+
+    # Print matrix with visual quadrant separators
+    for i, row in enumerate(matrix):
+        print(format_row(row))
+        if i == split_idx - 1:
+            print("-" * 92)
 
 
 def personal_data_provider(name):
@@ -52,10 +75,10 @@ def personal_data_provider(name):
         G12 = 5099.38 
         nu12 = 0.33
     elif name == 'fabian':
-        sigma_yield = 490
-        EModulus = 65420.46
-        nu = 0.34
-        max_mass = 28.667
+        EModulus11 = 133279.85
+        EModulus22 = 10252.3
+        G12 = 5126.15
+        nu12 = 0.33
     elif name == 'daniel':
         sigma_yield = 490
         EModulus = 65669.47
