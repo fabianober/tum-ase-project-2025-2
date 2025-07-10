@@ -6,10 +6,16 @@ def panel_element_volume(row, elementLength, elementWidth):
     panelVolume = (row['thickness']*elementLength*elementWidth)
     return panelVolume 
 
+# dim1: flange width
+# dim2: total height of T-Stringer (web+flange)
+# dim3: flange thickness
+# dim4: web thickness
+# elementLength: length of the stringer element
+
 def stringer_element_volume(row, elementLength):
     area_flange = row['dim3'] * row['dim1']
     area_web = row['dim4'] * (row['dim2'] - row['dim3'])
-    areaTot = area_flange + area_web 
+    areaTot = area_flange + area_web
     volume = areaTot * elementLength
     return volume
 
@@ -21,11 +27,11 @@ def crosssectional_properties_tee_skin(height_str, width_str, thickness_web, thi
     I_y_skin_left = (stringer_pitch/2 * thickness_skin_left**3) / 12
     I_y_skin_right = (stringer_pitch/2 * thickness_skin_right**3) / 12
     I_y_flange = (width_str * thickness_flange**3) / 12
-    I_y_web = (thickness_web*(height_str-thickness_web)**3)/12
+    I_y_web = (thickness_web*(height_str-thickness_flange)**3)/12
 
     # Calculate the centroid of the T-stringer
     z_skin_left = -thickness_skin_left / 2
-    z_skin_right = -thickness_skin_left / 2 
+    z_skin_right = -thickness_skin_left / 2 #Not an issue, as the skin is symmetric
     z_flange = thickness_flange/2
     z_web = thickness_flange + (height_str - thickness_flange) / 2
 
@@ -58,6 +64,7 @@ def crosssectional_properties_tee_skin(height_str, width_str, thickness_web, thi
     
     return I_y_bar, A_tot, EI_comb, E_y_tot, z_bar
 
+# crosssectional_properties_tee_skin is an old function, which is not used anymore, but kept for reference.
 def crosssectional_properties_hat_skin(DIM1, DIM2, DIM3, DIM4, thickness_skin_left,thickness_skin_right, stringer_pitch, stringer_depth):
     """
     DIM1: height of the hat section
