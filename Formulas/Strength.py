@@ -38,12 +38,12 @@ def strength(row, R_p_t, R_p_c, R_r_c, R_r_t, R_rp, p_rp_c,
     # Check which mode to apply 
     if row['Normal_2'] >= 0:
         RF_IFF = modeA(tau_21=row['Shear_12'], sigma_2=row['Normal_2'], R_rp=R_rp, R_r_t=R_r_t, p_rp_t=p_rp_t)
-        mode='ModeA'
+        mode='A'
     elif abs(row['Normal_2']/row['Shear_12']) <= criterion:
         RF_IFF = modeB(tau_21=row['Shear_12'], sigma_2=row['Normal_2'], R_rp=R_rp, p_rp_c=p_rp_c)
-        mode='ModeB'
+        mode='B'
     else:
         RF_IFF = modeC(tau_21=row['Shear_12'], sigma_2=row['Normal_2'], R_rp=R_rp, R_r_c=R_r_c, p_rr_c=p_rr_c)
-        mode='ModeC'
+        mode='C'
     RF_FF = fiberFracture(sigma_1=row['Normal_1'], R_p_c=R_p_c, R_p_t=R_p_t)
     return mode, RF_IFF, RF_FF
