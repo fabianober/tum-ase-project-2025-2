@@ -47,9 +47,9 @@ def crosssectional_properties_hat_skin_row(row, stringer_pitch, stringer_depth):
 
 def personal_data_provider(name):
     if name == 'yannis':
-        EModulus11 = 132583.92 * 0.9
-        EModulus22 = 10198.76 * 0.9
-        G12 = 5099.38 * 0.9
+        EModulus11 = 132583.92 
+        EModulus22 = 10198.76 
+        G12 = 5099.38 
         nu12 = 0.33
     elif name == 'fabian':
         sigma_yield = 490
