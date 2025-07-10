@@ -93,7 +93,7 @@ PlyStressesPanel['RF_strength'] = PlyStressesPanel[['RF_IFF', 'RF_FF']].min(axis
 PlyStressesPanel = PlyStressesPanel.drop(columns=['Normal_1', 'Normal_2', 'Shear_12'])
 
 #Reorder plies 
-PlyStressesPanel['Layer_num'] = PlyStressesPanel['Layer'].str.extract('(\d+)').astype(int)
+PlyStressesPanel['Layer_num'] = PlyStressesPanel['Layer'].str.extract(r'(\d+)').astype(int)
 PlyStressesPanel = PlyStressesPanel.sort_values(by='Layer_num')
 PlyStressesPanel = PlyStressesPanel.drop(columns=['Layer'])
 PlyStressesPanel = PlyStressesPanel.rename(columns={'Layer_num':'Layer'})
