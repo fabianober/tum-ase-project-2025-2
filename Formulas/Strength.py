@@ -49,7 +49,7 @@ def calculateMatStress(row, EModulus1, EModulus2, ShearModulus):
                         [q_16_bar[i]], q_26_bar[i], q_66_bar[i]])
     Q_bar = Q_bar * 0.9
     problemStress = Q_bar @ strains
-    T_sigma = #Call function 
+    #T_sigma = #Call function 
     materialStress = T_sigma @ problemStress
         
     return materialStress[0], materialStress[1], materialStress[2]
