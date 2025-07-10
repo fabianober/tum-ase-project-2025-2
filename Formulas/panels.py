@@ -6,7 +6,7 @@ N = 10
 M = 20
 
 
-def biaxialSS_calc(EModulus, nu, length, width, thickness, sigma_x, sigma_y):
+def biaxialSS_calc(D11, D12, D22, D66, length, width, thickness, sigma_x, sigma_y):
     global N 
     global M
     #Control if panel needs to be flipped
@@ -19,46 +19,49 @@ def biaxialSS_calc(EModulus, nu, length, width, thickness, sigma_x, sigma_y):
         length_temp = length
         length = width
         width = length_temp
+        #Swap D entries 
+        D11_temp = D11
+        D11 = D22
+        D22 = D11_temp 
 
-    k_sigma_it = dict()  #Create dictionary to store the critcial stresses for different n,m
+
+    sigma_crit_it = dict()  #Create dictionary to store the critcial stresses for different n,m
     alpha = length/width
     beta = sigma_y/sigma_x
-    sigma_e = (EModulus*pow(math.pi,2))/(12*(1-pow(nu,2))) * pow(thickness/width,2)         #refernence stress
+    
     #Looping over n half waves in width direction and over m half waves in length direction 
     for n in range(1,N):        
         for m in range(1,M):
-            k_sigma = pow((m**2 + n**2 * alpha**2), 2)/ (alpha**2 * (m**2 + beta * n**2 * alpha**2))  #buckling factor 
-            if k_sigma > 0:
-                k_sigma_it.update({(n,m):k_sigma})                                    #critical stress dictionary in dependence of m and n 
-    finalN, finalM = min(k_sigma_it, key = k_sigma_it.get)    #Select the smallest critcial stress and recover n and m 
-    k_sigma_min = k_sigma_it[(finalN,finalM)] 
-    sigma_crit = k_sigma_min *  sigma_e                   #And then also recover the corresponding critical stress 
-    reserveFactor = sigma_crit / (sigma_x*1.5)                          #Calculate the reserve factor based on this the critical stress, 1.5 to get ultimate loads for the reserve factor
-    return finalN, finalM,k_sigma_min, sigma_crit, abs(reserveFactor)
+            sigma_crit = math.pi**2/(width**2 * thickness) * 1/((m/alpha)**2 + beta*n**2) * (D11 * (m/alpha)**4 + 2*(D12+D66) + ((m*n)/alpha)**2 + D22 * n**4) 
+            if sigma_crit> 0:
+                sigma_crit_it.update({(n,m):sigma_crit})                                    #critical stress dictionary in dependence of m and n 
+    finalN, finalM = min(sigma_crit_it, key = sigma_crit_it.get)    #Select the smallest critcial stress and recover n and m 
+    sigma_crit_min = sigma_crit_it[(finalN,finalM)] 
+    reserveFactor = sigma_crit_min / (sigma_x*1.5)                          #Calculate the reserve factor based on this the critical stress, 1.5 to get ultimate loads for the reserve factor
+    return finalN, finalM, sigma_crit_min, abs(reserveFactor)
 
-def shearSS_calc(EModulus, nu, length, width, thickness, tau_xy):
-    alpha = length/width
-    if alpha < 1:
-        k_tau = 4 + (5.34/pow(alpha,2))
-    elif alpha >= 1:
-        k_tau = 5.34 + (4/pow(alpha,2))
-    tau_e = (EModulus*pow(math.pi,2))/(12*(1-pow(nu,2))) * pow(thickness/width,2)
-    tau_crit = tau_e * k_tau
+def shearSS_calc(D11, D12 , D22, D66 , length, width, thickness, tau_xy):
+    delta = math.sqrt(D11*D22)/(D12+2*D66)
+    if delta < 1:
+        tau_crit = 4/(thickness*width**2) *(math.sqrt(D22*(D12+2*D66)) * (11.7+0.532*delta+0.938*delta**2))
+    elif delta >= 1:
+        tau_crit = 4/(thickness*width**2) * ((D11*D22**3)**(1/4) * (8.12 + 5.05/delta))
+    
     reserveFactor = tau_crit / (tau_xy*1.5) # 1.5 to get ultimate loads for the reserve factor
-    return k_tau, tau_crit, abs(reserveFactor)
+    return tau_crit, abs(reserveFactor)
 
 
-def combinedBiaxialShear(EModulus, nu, length, width, thickness, sigma_x, sigma_y, tau_xy):
-    finalN, finalM,k_biaxial, sigma_crit, reserveFactorBi = biaxialSS_calc(EModulus=EModulus, nu=nu, length=length, width=width, thickness=thickness, sigma_x= sigma_x, sigma_y=sigma_y)
-    k_shear, tau_crit, reserveFactorShear = shearSS_calc(EModulus=EModulus, nu=nu, length=length, width=width, thickness=thickness, tau_xy=tau_xy)
+def combinedBiaxialShear(D11, D12, D22, D66, length, width, thickness, sigma_x, sigma_y, tau_xy):
+    finalN, finalM, sigma_crit_biaxial, reserveFactorBi = biaxialSS_calc(D11=D11, D12=D12, D22=D22, D66=D66, length=length, width=width, thickness=thickness, sigma_x= sigma_x, sigma_y=sigma_y)
+    tau_crit, reserveFactorShear = shearSS_calc(D11=D11, D12=D12, D22=D22, D66=D66, length=length, width=width, thickness=thickness, tau_xy=tau_xy)
     combinedReserveFactor = 1/(1/reserveFactorBi + pow(1/reserveFactorShear,2))
-    return k_shear, k_biaxial, abs(combinedReserveFactor)
+    return tau_crit, sigma_crit_biaxial, abs(combinedReserveFactor)
 
 
 # Function for calling other buckling formulas with row values 
-def panelBuckApply(row, EModulus, nu):
-    k_shear, k_biaxial, reserveFactor = combinedBiaxialShear(EModulus=EModulus, nu=nu, length=row['length'], width=row['width'], thickness=row['thickness'], sigma_x=row['sigmaXX'], sigma_y=row['sigmaYY'], tau_xy=row['sigmaXY'] )
-    return k_shear, k_biaxial, reserveFactor 
+def panelBuckApply(row, D11, D12, D22, D66):
+    tau_crit, sigma_crit_bi, reserveFactor = combinedBiaxialShear(D11=D11, D12=D12, D22=D22, D66=D66, length=row['length'], width=row['width'], thickness=row['thickness'], sigma_x=row['sigmaXX'], sigma_y=row['sigmaYY'], tau_xy=row['sigmaXY'] )
+    return tau_crit, sigma_crit_bi, reserveFactor 
 
 
 
