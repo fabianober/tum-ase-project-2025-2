@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
 # # Task 1 f, Calculating reserve factors against column buckling using Euler-Johnson
 
 # ## We need from the data file:
@@ -367,5 +364,5 @@ outputdf['E_hom,b,skin_right'] = [E_y_skin] * outputLength
 # In[59]:
 
 
-outputdf.to_excel(f'../data/{name}/processed_f.xlsx')
+outputdf.to_excel(f'../data/{name}/output/processed_f.xlsx')
 
