@@ -112,3 +112,20 @@ def calculateABD(stacksequence, plyT, EModulus1, EModulus2, ShearModulus):
 
 if __name__=='__main__':
     ABD, ABD_inverse = calculateABD([0,90,90,0], 0.2)
+
+def tSigmaMatrix(theta):
+    #Evaluating sinus and cosinus of theta
+    sinus_theta = math.sin(math.radians(theta))
+    cosinus_theta = math.cos(math.radians(theta))
+    #Determine entries of the T-sigma-matrix
+    t11 = cosinus_theta**2
+    t12 = sinus_theta**2
+    t13 = 2*sinus_theta*cosinus_theta
+    t23 = -2*sinus_theta*cosinus_theta
+    t31 = -sinus_theta*cosinus_theta
+    t33 = cosinus_theta**2 - sinus_theta**2
+    #Assemble T-sigma-matrix
+    tSigma = np.array([[t11, t12, t13],
+                       [t12, t11, t23],
+                       [t31, -t31, t33]])
+    return tSigma
