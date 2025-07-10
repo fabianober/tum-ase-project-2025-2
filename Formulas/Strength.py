@@ -1,4 +1,6 @@
 import math
+import numpy as np 
+
 # Calculate the fiber fracture FF
 def fiberFracture(sigma_1, R_p_c, R_p_t):
     if sigma_1 > 0:
@@ -26,6 +28,34 @@ def modeC(tau_21, sigma_2, R_rp, R_r_c, p_rr_c):
     RF=1/exposure  
     return RF
 
+def calculateMatStress(row, EModulus1, EModulus2, ShearModulus):
+    strains = np.array([row['strainX'], 0, 0])
+    
+
+    #Get all Q_bar entries 
+    
+
+    q_bar = constitutiveLawPlyProblemCOS(EModulus1=EModulus1, EModulus2=EModulus2,ShearModulus=ShearModulus, theta=row['plyTheta'])
+    q_11_bar = q_bar[0]
+    q_12_bar = q_bar[1]
+    q_22_bar = q_bar[2]
+    q_16_bar = q_bar[3]
+    q_26_bar = q_bar[4]
+    q_66_bar = q_bar[5]
+    
+    # Calculate the stress in problem Cosy for all 
+    Q_bar = np.array([[q_11_bar[i], q_12_bar[i], q_16_bar[i]],
+                        [q_12_bar[i], q_22_bar[i], q_26_bar[i]],
+                        [q_16_bar[i]], q_26_bar[i], q_66_bar[i]])
+    Q_bar = Q_bar * 0.9
+    problemStress = Q_bar @ strains
+    T_sigma = #Call function 
+    materialStress = T_sigma @ problemStress
+        
+    return materialStress[0], materialStress[1], materialStress[2]
+
+
+        
 
 
 def strength(row, R_p_t, R_p_c, R_r_c, R_r_t, R_rp, p_rp_c, 
