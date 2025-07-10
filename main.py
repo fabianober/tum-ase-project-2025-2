@@ -1,8 +1,6 @@
 import sys
 import os
-#import random #(Unused import)
-#import string #(Unused import)
-import json
+import importlib.util
 
 sys.path.insert(0, os.path.abspath('..'))
 sys.path.insert(0, os.path.abspath('hmscript'))
@@ -56,4 +54,9 @@ E_avg_x = (E_avg_x_web*A_web + E_avg_x_flange*A_flange)/(A_web+A_flange)
 print('Your homogonized average Ex is: '+str(E_avg_x))
 
 
+print("\n We will now run task 1f")
 
+task_1f_path = os.path.join('calculators', 'task_1f.py')
+spec = importlib.util.spec_from_file_location("task_1f", task_1f_path)
+task_1f = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(task_1f)

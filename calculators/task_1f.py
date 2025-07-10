@@ -6,11 +6,6 @@
 # - dimensions
 # - `EulerJohnson(EModulus, I_y, area, length, height_str, thickness_flange, thickness_web, radius, sigma_yield, sigma_applied, c=1)`
 
-
-with open("../name.txt", "r") as f:
-    name = f.read().strip()
-
-
 # ## Imports
 import pandas as pd
 import numpy as np
@@ -25,9 +20,12 @@ from formulas.helpers import *
 from formulas.abd_matrix import * 
 
 
-'''# config parser
-import configparser
 
+with open(os.path.join("name.txt"), "r") as f:
+    name = f.read().strip()
+
+
+'''
 # get the rounding_digits from the ini file
 config = configparser.ConfigParser()
 config.read('../config.ini')
@@ -93,7 +91,7 @@ E_y_web = E_x_web
 # ## Import everything for panels 
 
 # Import panel properties and match the elements to the respective panel
-paneldf = pd.read_csv(f'../data/{name}/panel.csv')
+paneldf = pd.read_csv(f'data/{name}/panel.csv')
 thickness = [8.832]* len(paneldf)
 paneldf['thickness'] = thickness
 paneldf = paneldf.rename(columns={'Elements':'Element ID', 'XX':'sigmaXX', 'Loadcase':'Load Case'})
@@ -125,7 +123,7 @@ print(rightThickness)
 # ## Import everything for stringers
 
 # Open and match stringer properties 
-stringerdf = pd.read_csv(f'../data/{name}/stringer.csv')
+stringerdf = pd.read_csv(f'data/{name}/stringer.csv')
 stringerdf = stringerdf.rename(columns={'Elements':'Element ID', 'Element Stresses (1D):CBAR/CBEAM Axial Stress':'sigmaXX', 'Loadcase':'Load Case'})
 stringerdf['Component Name'] = stringerdf.apply(elementComponentMatch, axis=1)
 dflength = len(stringerdf)
@@ -359,10 +357,7 @@ outputdf['E_hom,b,web'] = [E_y_web] * outputLength
 outputdf['E_hom,b,skin_left'] = [E_y_skin] * outputLength
 outputdf['E_hom,b,skin_right'] = [E_y_skin] * outputLength
 
-# # Generate output file 
+# # Generate output file
 
-# In[59]:
-
-
-outputdf.to_excel(f'../data/{name}/output/processed_f.xlsx')
+outputdf.to_excel(f'data/{name}/output/processed_f.xlsx')
 
