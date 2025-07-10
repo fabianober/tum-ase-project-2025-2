@@ -3,4 +3,4 @@
 ## Servus und hallo zu dieser neuen Repo!
 
 ### Setup
-- please rename the `name.txt.template` to `name.txt` and enter your name to the file (it will be gitignored)
+- please create a `name.txt` in the root dir. and enter your name to the file (it will be gitignored)

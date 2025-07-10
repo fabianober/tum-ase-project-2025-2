@@ -1,10 +1,4 @@
 # Calculating the reserve Factors of the panels 
-
-
-with open(os.path.join("name.txt"), "r") as f:
-    name = f.read().strip()
-
-
 # # Imports
 
 import pandas as pd
@@ -17,6 +11,9 @@ sys.path.insert(0, os.path.abspath('../optimization'))
 from formulas.panels import *
 from formulas.helpers import *
 from formulas.abd_matrix import *
+
+with open(os.path.join("name.txt"), "r") as f:
+    name = f.read().strip()
 
 rounding_digits = 3
 
@@ -61,7 +58,7 @@ print(D11, D22, D12, D66)
 
 
 # New version of importing panel stress file
-paneldf = pd.read_csv(f'../data/{name}/panel.csv')
+paneldf = pd.read_csv(f'data/{name}/panel.csv')
 paneldf = paneldf.rename(columns={'Elements':'Element ID', 'XX':'sigmaXX', 'YY':'sigmaYY', 'XY':'sigmaXY', 'Loadcase':'Load Case'})
 paneldf['Component Name'] = paneldf.apply(elementComponentMatch, axis=1)
 paneldf = paneldf.drop(['FileID', 'Step', 'Layer'], axis=1)
@@ -157,6 +154,6 @@ outputDf
 # # ROUND & Output the files
 
 outputDf = outputDf.round(rounding_digits)
-outputDf.to_excel(f'../data/{name}/output/processed_e.xlsx')
+outputDf.to_excel(f'data/{name}/output/processed_e.xlsx')
 outputDf.head(10)
 

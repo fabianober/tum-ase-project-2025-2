@@ -55,8 +55,15 @@ print('Your homogonized average Ex is: '+str(E_avg_x))
 
 
 print("\n We will now run task 1f")
+# Dynamically import the 'task_1f' module from the 'calculators' directory
+task_1f_path = os.path.join('calculators', 'task_1f.py')  # Build the path to the module
+spec = importlib.util.spec_from_file_location("task_1f", task_1f_path)  # Create a module spec
+task_1f = importlib.util.module_from_spec(spec)  # Create a module object from the spec
+spec.loader.exec_module(task_1f)  # Load and execute the module
 
-task_1f_path = os.path.join('calculators', 'task_1f.py')
-spec = importlib.util.spec_from_file_location("task_1f", task_1f_path)
-task_1f = importlib.util.module_from_spec(spec)
-spec.loader.exec_module(task_1f)
+print("\n We will now run task 1e")
+# Dynamically import the 'task_1e' module from the 'calculators' directory
+task_1e_path = os.path.join('calculators', 'task_1e.py')  # Build the path to the module
+spec = importlib.util.spec_from_file_location("task_1e", task_1e_path)  # Create a module spec
+task_1e = importlib.util.module_from_spec(spec)  # Create a module object from the spec
+spec.loader.exec_module(task_1e)  # Load and execute the module

@@ -19,18 +19,11 @@ from formulas.panels import *
 from formulas.helpers import *
 from formulas.abd_matrix import * 
 
-
-
 with open(os.path.join("name.txt"), "r") as f:
     name = f.read().strip()
 
 
-'''
-# get the rounding_digits from the ini file
-config = configparser.ConfigParser()
-config.read('../config.ini')
-rounding_digits = int(config['DEFAULT']['rounding_digits'])'''
-
+rounding_digits = 3
 
 # ## Constants
 personal_data = personal_data_provider(name)
@@ -336,7 +329,7 @@ lc3combined = lc3combined.rename(columns={'sigma_XX_avg':'XX_avg_LC3', 'sigma_cr
 
 
 outputdf = pd.concat([lc1combined,lc2combined,lc3combined], axis = 1)
-#outputdf = outputdf.round(rounding_digits)
+outputdf = outputdf.round(rounding_digits)
 # After concatenation, keep only the first column of cross section propertries and drop the rest
 outputdf['Lambda'] = outputdf.filter(like='lambda').iloc[:, 1]  # Take the first lambda column
 outputdf['Lambda_crit'] = outputdf.filter(like='lambda_crit').iloc[:, 0]  # Take the first I_yy column
@@ -360,4 +353,3 @@ outputdf['E_hom,b,skin_right'] = [E_y_skin] * outputLength
 # # Generate output file
 
 outputdf.to_excel(f'data/{name}/output/processed_f.xlsx')
-
