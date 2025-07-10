@@ -1,3 +1,9 @@
+import sys
+import os
+
+sys.path.insert(0, os.path.abspath('formulas'))
+
+from abd_matrix import *
 import math
 import numpy as np 
 
