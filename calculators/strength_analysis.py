@@ -87,7 +87,6 @@ PlyStressesPanel[['Mode', 'RF_IFF', 'RF_FF']] = PlyStressesPanel.apply(strength,
 # ## Calculate RF_strength 
 PlyStressesPanel['RF_strength'] = PlyStressesPanel[['RF_IFF', 'RF_FF']].min(axis=1)
 
-
 # ## Convert to output for panels 
 # We can drop the stresses 
 PlyStressesPanel = PlyStressesPanel.drop(columns=['Normal_1', 'Normal_2', 'Shear_12'])
