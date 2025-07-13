@@ -43,9 +43,9 @@ print(ABD_panel_inverse)
 
 
 # Save ABD_panel to Excel
-abd_panel_df = pd.DataFrame(ABD_panel)
-abd_panel_df.to_excel(f"data/{name}/output/ABD_panel.xlsx", index=False, header=False)
-print(f"\nABD_panel matrix has been saved to 'data/{name}/output/ABD_panel.xlsx'.")
+abd_flange_df = pd.DataFrame(ABD_flange)
+abd_flange_df.to_excel(f"data/{name}/output/ABD_flange.xlsx", index=False, header=False)
+print(f"\nABD_flange matrix has been saved to 'data/{name}/output/ABD_flange.xlsx'.")
 
 
 # Calculate the homogonized average axial EModulus 
@@ -55,6 +55,14 @@ E_avg_x_flange = ABD_flange[0][0]/4
 A_flange = 70*4
 E_avg_x = (E_avg_x_web*A_web + E_avg_x_flange*A_flange)/(A_web+A_flange)
 print('\n\n Your homogonized average Ex is: '+str(E_avg_x))
+
+# Calculate the homogonized average axial Shear modulus
+G_avg_x_web = 1/(ABD_web_inverse[2][2]*4)
+A_web = 40*4
+G_avg_x_flange = ABD_flange[2][2]/4
+A_flange = 70*4
+G_avg_x = (G_avg_x_web*A_web + G_avg_x_flange*A_flange)/(A_web+A_flange)
+print('\n\n Your homogonized average G is: '+str(G_avg_x))
 
 
 print("\nWe will now run task 1f\n")
