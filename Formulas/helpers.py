@@ -86,8 +86,8 @@ def personal_data_provider(name):
         nu12 = 0.33
     elif name == 'felix':
         EModulus11 = 132205.71
-        EModulus22 = 10326.6
-        G12 = 5163.3
+        EModulus22 = 10169.67
+        G12 = 5084.84
         nu12 = 0.33 #(Not sure, if .33 is correct yet.)
     return EModulus11, EModulus22, G12, nu12
 
