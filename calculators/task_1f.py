@@ -335,7 +335,7 @@ outputdf['Lambda'] = outputdf.filter(like='lambda').iloc[:, 1]  # Take the first
 outputdf['Lambda_crit'] = outputdf.filter(like='lambda_crit').iloc[:, 0]  # Take the first I_yy column
 outputdf['R_gyr'] = outputdf.filter(like='r_gyr').iloc[:, 0]  # Take the first I_yy column
 outputdf['EI_Comb'] = outputdf.filter(like='EI_comb').iloc[:, 0]  # Take the first I_yy column
-outputdf['z_EC,comb'] = outputdf.filter(like='EI_comb').iloc[:, 0]  # Take the first I_yy column
+outputdf['z_EC,comb'] = outputdf.filter(like='z_bar').iloc[:, 0]  # Take the first I_yy column
 outputdf = outputdf.drop(columns=[col for col in outputdf.columns if col.startswith('lambda')])
 outputdf = outputdf.drop(columns=[col for col in outputdf.columns if col.startswith('r_gyr')])
 outputdf = outputdf.drop(columns=[col for col in outputdf.columns if col.startswith('EI_comb')])
