@@ -80,14 +80,14 @@ def personal_data_provider(name):
         G12 = 5126.15
         nu12 = 0.33
     elif name == 'daniel':
-        sigma_yield = 490
-        EModulus = 65669.47
-        nu = 0.34
-        max_mass = 28.821
+        EModulus11 = 134245.84
+        EModulus22 = 65669.47
+        G12 = 5163.3
+        nu12 = 0.33
     elif name == 'felix':
         EModulus11 = 132205.71
-        EModulus22 = 10169.67
-        G12 = 5084.84
+        EModulus22 = 10326.6
+        G12 = 5163.3
         nu12 = 0.33 #(Not sure, if .33 is correct yet.)
     return EModulus11, EModulus22, G12, nu12
 
