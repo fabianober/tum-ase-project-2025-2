@@ -32,7 +32,7 @@ def biaxialSS_calc(D11, D12, D22, D66, length, width, thickness, sigma_x, sigma_
     #Looping over n half waves in width direction and over m half waves in length direction 
     for n in range(1,N):        
         for m in range(1,M):
-            sigma_crit = math.pi**2/(width**2 * thickness) * 1/((m/alpha)**2 + beta*n**2) * (D11 * (m/alpha)**4 + 2*(D12+D66) + ((m*n)/alpha)**2 + D22 * n**4) 
+            sigma_crit = math.pi**2/(width**2 * thickness) * 1/((m/alpha)**2 + beta*n**2) * (D11 * (m/alpha)**4 + 2*(D12+D66) * ((m*n)/alpha)**2 + D22 * n**4) #Here was a plus and not a times 
             if sigma_crit> 0:
                 sigma_crit_it.update({(n,m):sigma_crit})                                    #critical stress dictionary in dependence of m and n 
     finalN, finalM = min(sigma_crit_it, key = sigma_crit_it.get)    #Select the smallest critcial stress and recover n and m 
