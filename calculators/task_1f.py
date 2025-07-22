@@ -44,6 +44,11 @@ StringerWeb=[-45,-45,45,45,0,0,90,90,90,90,0,0,45,45,-45,-45]
 tPanel = 0.552
 tStringer = 0.25
 
+#Laminate thickness
+skinThickness = 8.832
+flangeThickness = 4
+webThickness = 4
+
 #Geometric dimensions 
 stringer_pitch = 400
 effective_width = stringer_pitch/2
@@ -68,14 +73,14 @@ ABD_flange_inverse = ABD_flange_inverse * knockdown
 ABD_web = ABD_web * knockdown
 ABD_web_inverse = ABD_web_inverse * knockdown
 #Compute necessary axial Moduli 
-E_x_skin = ABD_panel[0][0]/tStringer
-E_x_flange = ABD_flange[0][0]/tStringer
-E_x_web = 1/(ABD_web_inverse[0][0]*tStringer)
+E_x_skin = ABD_panel[0][0]/skinThickness
+E_x_flange = ABD_flange[0][0]/flangeThickness
+E_x_web = 1/(ABD_web_inverse[0][0]*webThickness)
 
 
 #Compute necessary bending around y Moduli 
-E_y_skin = ABD_panel[3][3] *12/tPanel**3
-E_y_flange = ABD_flange[3][3]*12/tStringer**2
+E_y_skin = ABD_panel[3][3] *12/skinThickness**3
+E_y_flange = ABD_flange[3][3]*12/flangeThickness**3
 E_y_web = E_x_web
 
 
