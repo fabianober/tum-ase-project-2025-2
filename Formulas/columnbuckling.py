@@ -31,7 +31,7 @@ def crosssectional_properties_tee_skin(height_str, width_str, thickness_web, thi
 
     # Calculate the centroid of the T-stringer
     z_skin_left = -thickness_skin_left / 2
-    z_skin_right = -thickness_skin_left / 2 #Not an issue, as the skin is symmetric
+    z_skin_right = -thickness_skin_right / 2 #Not an issue, as the skin is symmetric
     z_flange = thickness_flange/2
     z_web = thickness_flange + (height_str - thickness_flange) / 2
 
