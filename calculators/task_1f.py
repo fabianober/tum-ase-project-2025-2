@@ -334,7 +334,7 @@ lc3combined = lc3combined.rename(columns={'sigma_XX_avg':'XX_avg_LC3', 'sigma_cr
 
 
 outputdf = pd.concat([lc1combined,lc2combined,lc3combined], axis = 1)
-outputdf = outputdf.round(rounding_digits)
+#outputdf = outputdf.round(rounding_digits)
 # After concatenation, keep only the first column of cross section propertries and drop the rest
 outputdf['Lambda'] = outputdf.filter(like='lambda').iloc[:, 1]  # Take the first lambda column
 outputdf['Lambda_crit'] = outputdf.filter(like='lambda_crit').iloc[:, 0]  # Take the first I_yy column

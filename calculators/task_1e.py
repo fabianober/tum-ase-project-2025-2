@@ -153,7 +153,7 @@ outputDf
 
 # # ROUND & Output the files
 
-outputDf = outputDf.round(rounding_digits)
+#outputDf = outputDf.round(rounding_digits)
 outputDf.to_excel(f'data/{name}/output/processed_e.xlsx')
 outputDf.head(10)
 
