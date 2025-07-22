@@ -79,6 +79,10 @@ nu_12 = personal_data[3]
 
 # # Calculate RF and mode for panels
 
+PlyStressesPanel['Normal_1'] = PlyStressesPanel['Normal_1'] * 1.5 # encorporate 1.5 for ultimate loads
+PlyStressesPanel['Normal_2'] = PlyStressesPanel['Normal_2'] * 1.5
+PlyStressesPanel['Shear_12'] = PlyStressesPanel['Shear_12'] * 1.5
+
 PlyStressesPanel[['Mode', 'RF_IFF', 'RF_FF']] = PlyStressesPanel.apply(strength, R_p_t=R_p_t, R_p_c=R_p_c, R_r_c=R_r_c, R_r_t=R_r_t, 
                                                     R_rp=R_rp, p_rp_c=p_rp_c, p_rp_t=p_rp_t, p_rr_c=p_rr_c, p_rr_t=p_rr_t,
                                                     axis=1, result_type='expand')
@@ -153,6 +157,12 @@ StringerStrains[['Normal_1', 'Normal_2', 'Shear_12']] = StringerStrains.apply(
 
 
 # ## Now calculate the FF and the IFF 
+
+# Ultimate load factor
+StringerStrains['Normal_1'] = StringerStrains['Normal_1'] * 1.5 # encorporate 1.5 for ultimate loads
+StringerStrains['Normal_2'] = StringerStrains['Normal_2'] * 1.5
+StringerStrains['Shear_12'] = StringerStrains['Shear_12'] * 1.5
+
 
 StringerStrains[['Mode', 'RF_IFF', 'RF_FF']] = StringerStrains.apply(strength, R_p_t=R_p_t, R_p_c=R_p_c, R_r_c=R_r_c, R_r_t=R_r_t, 
                                                     R_rp=R_rp, p_rp_c=p_rp_c, p_rp_t=p_rp_t, p_rr_c=p_rr_c, p_rr_t=p_rr_t,
