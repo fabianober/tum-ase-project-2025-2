@@ -1,5 +1,13 @@
 import math
 import numpy as np 
+
+def q_matrix(EModulus1, EModulus2, ShearModulus, mu12=0.33):
+    mu21 = mu12*EModulus2/EModulus1
+    q11 = EModulus1/(1-mu12*mu21)
+    q12 = mu12*EModulus2/(1-mu12*mu21)
+    q22 = EModulus2/(1-mu12*mu21)
+    q66 = ShearModulus
+    return q11, q22, q12, q66
 def constitutiveLawPlyProblemCOS(EModulus1, EModulus2, ShearModulus, theta, mu12=0.33):
     #Evaluating sinus and cosinus of theta
     sinus_theta = math.sin(math.radians(theta))
