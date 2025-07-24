@@ -16,7 +16,7 @@ def fiberFracture(sigma_1, R_p_c, R_p_t):
     RF = 1/exposure
     return RF
 #Calculate the inter fiber fracture IFF
-# Function for calculating mode A
+# Function for calculating modeA
 def modeA(tau_21, sigma_2, R_rp, R_r_t, p_rp_t):
     exposure = math.sqrt((tau_21/R_rp)**2 + (1-p_rp_t*R_r_t/R_rp)**2 * (sigma_2/R_r_t)**2)+p_rp_t *sigma_2/R_rp
     RF = 1/exposure
@@ -70,12 +70,12 @@ def strength(row, R_p_t, R_p_c, R_r_c, R_r_t, R_rp, p_rp_c,
     #Build term for mode B, C transition
     R_rr_A = R_r_c/(2*(1+p_rr_c))
     tau_21_c = R_rp * math.sqrt(1+2*p_rp_c*(R_rr_A/R_rp))
-    criterion = R_rr_A/abs(tau_21_c)
     # Check which mode to apply 
     if row['Normal_2'] >= 0:
         RF_IFF = modeA(tau_21=row['Shear_12'], sigma_2=row['Normal_2'], R_rp=R_rp, R_r_t=R_r_t, p_rp_t=p_rp_t)
         mode='A'
-    elif abs(row['Shear_12']/row['Normal_2']) >= 1/criterion:
+    elif abs(row['Normal_2']/row['Shear_12']) <= R_rr_A/abs(tau_21_c):
+        # condition from Chapter 7, slide 435
         RF_IFF = modeB(tau_21=row['Shear_12'], sigma_2=row['Normal_2'], R_rp=R_rp, p_rp_c=p_rp_c)
         mode='B'
     else:
