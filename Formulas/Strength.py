@@ -69,7 +69,7 @@ def strength(row, R_p_t, R_p_c, R_r_c, R_r_t, R_rp, p_rp_c,
     mode = 'empty'
     #Build term for mode B, C transition
     R_rr_A = R_r_c/(2*(1+p_rr_c))
-    tau_21_c = R_rp * math.sqrt(1+2*p_rp_c*(R_rr_A/R_rp))
+    tau_21_c = R_rp * math.sqrt(1+2*p_rr_c)
     # Check which mode to apply 
     if row['Normal_2'] >= 0:
         RF_IFF = modeA(tau_21=row['Shear_12'], sigma_2=row['Normal_2'], R_rp=R_rp, R_r_t=R_r_t, p_rp_t=p_rp_t)
