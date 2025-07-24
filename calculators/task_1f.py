@@ -346,7 +346,8 @@ outputdf = outputdf.drop(columns=[col for col in outputdf.columns if col.startsw
 outputdf = outputdf.drop(columns=[col for col in outputdf.columns if col.startswith('EI_comb')])
 outputdf = outputdf.drop(columns=[col for col in outputdf.columns if col.startswith('z_bar')])
 
-
+# Swap the sign of z_EC combined 
+outputdf['z_EC,comb'] = outputdf['z_EC,comb'] *-1
 
 # ## Add other requested values 
 outputLength = len(outputdf)
