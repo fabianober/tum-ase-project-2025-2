@@ -35,29 +35,26 @@ def modeC(tau_21, sigma_2, R_rp, R_r_c, p_rr_c):
     return RF
 
 def calculateMatStress(row, EModulus1, EModulus2, ShearModulus):
-    strains = np.array([row['strainX'], 0, 0])
+    problemStrains = np.array([row['strainX'], 0, 0])
     
 
     #Get all Q_bar entries 
     
 
-    q_bar = constitutiveLawPlyProblemCOS(EModulus1=EModulus1, EModulus2=EModulus2,ShearModulus=ShearModulus, theta=row['plyTheta'])
-    q_11_bar = q_bar[0]
-    q_12_bar = q_bar[1]
-    q_22_bar = q_bar[2]
-    q_16_bar = q_bar[3]
-    q_26_bar = q_bar[4]
-    q_66_bar = q_bar[5]
+    q_bar = q_matrix(EModulus1=EModulus1, EModulus2=EModulus2,ShearModulus=ShearModulus)
+    q_11= q_bar[0]
+    q_12 = q_bar[2]
+    q_22 = q_bar[1]
+    q_66 = q_bar[3]
     
     # Calculate the stress in problem Cosy for all 
-    Q_bar = np.array([[q_11_bar, q_12_bar, q_16_bar],
-                     [q_12_bar, q_22_bar, q_26_bar],
-                     [q_16_bar, q_26_bar, q_66_bar]])
+    Q_bar = np.array([[q_11, q_12,  0],
+                      [q_12, q_22,  0],
+                      [0,     0,  q_66]])
     Q_bar = Q_bar * 0.9
-    problemStress = Q_bar @ strains
-    T_sigma = tSigmaMatrix(theta=row['plyTheta'])
-    materialStress = T_sigma @ problemStress
-        
+    T_epsilon = tEpsilonMatrix(theta=row['plyTheta'])
+    materialStrains = T_epsilon @ problemStrains
+    materialStress = Q_bar @ materialStrains
     return materialStress[0], materialStress[1], materialStress[2]
 
 
