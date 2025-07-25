@@ -119,7 +119,9 @@ def calculateABD(stacksequence, plyT, EModulus1, EModulus2, ShearModulus):
 
 
 if __name__=='__main__':
-    ABD, ABD_inverse = calculateABD([0,90,90,0], 0.2)
+    ABD, ABD_inverse = calculateABD([-45, -45, 45, 45, 0, 0, 90, 90, 90, 90, 0, 0, 45, 45, -45, -45], 0.25, 132583.92 *0.9, 10198.76*0.9, 5099.38*0.9)
+    print(ABD)
+    print(ABD_inverse)
 
 def tEpsilonMatrix(theta):
     #Evaluating sinus and cosinus of theta

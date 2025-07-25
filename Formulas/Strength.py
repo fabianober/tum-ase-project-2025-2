@@ -36,7 +36,6 @@ def modeC(tau_21, sigma_2, R_rp, R_r_c, p_rr_c):
 
 def calculateMatStress(row, EModulus1, EModulus2, ShearModulus):
     problemStrains = np.array([row['strainX'], 0, 0])
-    
 
     #Get all Q_bar entries 
     

@@ -65,17 +65,17 @@ ABD_flange, ABD_flange_inverse = calculateABD(stacksequence=StringerFlange, plyT
 ABD_web, ABD_web_inverse = calculateABD(stacksequence=StringerWeb, plyT=tStringer, EModulus1=E_11, EModulus2=E_22, ShearModulus=G_12)
 
 ABD_panel = ABD_panel * knockdown
-ABD_panel_inverse = ABD_panel_inverse * knockdown
+
 
 ABD_flange = ABD_flange * knockdown
-ABD_flange_inverse = ABD_flange_inverse * knockdown
+
 
 ABD_web = ABD_web * knockdown
-ABD_web_inverse = ABD_web_inverse * knockdown
+
 #Compute necessary axial Moduli 
 E_x_skin = ABD_panel[0][0]/skinThickness
 E_x_flange = ABD_flange[0][0]/flangeThickness
-E_x_web = 1/(ABD_web_inverse[0][0]*webThickness)
+E_x_web = 0.9/(ABD_web_inverse[0][0]*webThickness)
 
 
 #Compute necessary bending around y Moduli 
