@@ -37,8 +37,7 @@ def modeC(tau_21, sigma_2, R_rp, R_r_c, p_rr_c):
 def calculateMatStress(row, EModulus1, EModulus2, ShearModulus):
     problemStrains = np.array([row['strainX'], 0, 0])
 
-    #Get all Q_bar entries 
-    
+    #Get all Q_bar entries
 
     q_bar = q_matrix(EModulus1=EModulus1, EModulus2=EModulus2,ShearModulus=ShearModulus)
     q_11= q_bar[0]
@@ -50,15 +49,11 @@ def calculateMatStress(row, EModulus1, EModulus2, ShearModulus):
     Q_bar = np.array([[q_11, q_12,  0],
                       [q_12, q_22,  0],
                       [0,     0,  q_66]])
-    Q_bar = Q_bar * 0.9
+    
     T_epsilon = tEpsilonMatrix(theta=row['plyTheta'])
     materialStrains = T_epsilon @ problemStrains
     materialStress = Q_bar @ materialStrains
     return materialStress[0], materialStress[1], materialStress[2]
-
-
-        
-
 
 def strength(row, R_p_t, R_p_c, R_r_c, R_r_t, R_rp, p_rp_c, 
              p_rp_t, p_rr_c, p_rr_t):
